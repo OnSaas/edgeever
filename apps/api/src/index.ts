@@ -220,7 +220,7 @@ const DEMO_SEED_MEMOS = [
     tags: ["editor", "markdown"],
     isPinned: true,
     markdown:
-      "## 富文本与 Markdown 编辑\n\nEdgeEver 使用 TipTap 保存结构化正文，同时保留 Markdown 和纯文本索引。\n\n- 支持标题、列表、引用和代码块\n- API 和 MCP 可以直接读写 Markdown\n- 搜索使用纯文本索引，不依赖前端编辑器",
+      "## 富文本与 Markdown 编辑\n\nEdgeEver 使用 TipTap 保存结构化正文，同时保留 Markdown 和纯文本索引。\n\n- 支持标题、列表、引用和代码块\n- API 和 MCP 可以直接读写 Markdown\n- 搜索使用纯文本索引，不依赖前端编辑器\n\n![EdgeEver 编辑器图片示例](/api/v1/resources/res_demo_editor_image/blob)",
   },
   {
     id: "memo_demo_search_tags",
@@ -257,6 +257,37 @@ const DEMO_SEED_MEMOS = [
     isPinned: false,
     markdown:
       "## 移动端与 PWA\n\nEdgeEver 支持桌面三栏工作流，也适配移动端。你可以把站点安装为 PWA，用手机快速记录，再回到桌面整理。",
+  },
+  {
+    id: "memo_demo_images",
+    notebookId: "nb_creative",
+    title: "图片笔记示例",
+    tags: ["image", "attachment", "demo"],
+    isPinned: false,
+    markdown:
+      "## 图片笔记示例\n\n笔记正文可以直接插入图片。上传后的图片会进入 R2，正文里保存的是资源 URL，API、MCP 和前端编辑器都能读取。\n\n![EdgeEver 图片资源示例](/api/v1/resources/res_demo_gallery_image/blob)\n\n这类笔记适合保存截图、设计稿、读书摘图和临时资料。",
+  },
+];
+const DEMO_SEED_RESOURCES = [
+  {
+    id: "res_demo_editor_image",
+    memoId: "memo_demo_editor",
+    filename: "edgeever-editor-demo.svg",
+    mimeType: "image/svg+xml",
+    width: 960,
+    height: 520,
+    svg:
+      '<svg xmlns="http://www.w3.org/2000/svg" width="960" height="520" viewBox="0 0 960 520" role="img" aria-label="EdgeEver editor demo"><rect width="960" height="520" rx="32" fill="#f8fafc"/><rect x="42" y="44" width="876" height="432" rx="24" fill="#ffffff" stroke="#dbe7e2" stroke-width="2"/><rect x="42" y="44" width="250" height="432" rx="24" fill="#ecfdf5"/><rect x="322" y="88" width="524" height="24" rx="12" fill="#0f766e"/><rect x="322" y="138" width="408" height="14" rx="7" fill="#94a3b8"/><rect x="322" y="166" width="470" height="14" rx="7" fill="#cbd5e1"/><rect x="322" y="214" width="220" height="118" rx="18" fill="#d1fae5"/><circle cx="384" cy="272" r="34" fill="#10b981"/><path d="M356 314 402 264l35 38 24-28 51 40H356Z" fill="#047857"/><rect x="570" y="224" width="270" height="16" rx="8" fill="#64748b"/><rect x="570" y="258" width="230" height="14" rx="7" fill="#94a3b8"/><rect x="570" y="288" width="250" height="14" rx="7" fill="#cbd5e1"/><rect x="570" y="348" width="180" height="38" rx="19" fill="#10b981"/><text x="660" y="373" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#ffffff">支持图片笔记</text><rect x="78" y="90" width="170" height="18" rx="9" fill="#0f766e"/><rect x="78" y="132" width="124" height="14" rx="7" fill="#5eead4"/><rect x="78" y="166" width="148" height="14" rx="7" fill="#99f6e4"/><rect x="78" y="200" width="110" height="14" rx="7" fill="#99f6e4"/></svg>',
+  },
+  {
+    id: "res_demo_gallery_image",
+    memoId: "memo_demo_images",
+    filename: "edgeever-gallery-demo.svg",
+    mimeType: "image/svg+xml",
+    width: 960,
+    height: 540,
+    svg:
+      '<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-label="EdgeEver image note demo"><defs><linearGradient id="sky" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#e0f2fe"/><stop offset="1" stop-color="#dcfce7"/></linearGradient></defs><rect width="960" height="540" rx="36" fill="url(#sky)"/><rect x="78" y="70" width="804" height="400" rx="30" fill="#ffffff" stroke="#bae6fd" stroke-width="2"/><rect x="118" y="112" width="390" height="276" rx="24" fill="#eff6ff"/><circle cx="220" cy="194" r="54" fill="#facc15"/><path d="M118 340 246 236l94 78 66-58 102 84v48H118Z" fill="#22c55e"/><path d="M118 360 292 276l112 84 104-64v92H118Z" fill="#15803d" opacity=".75"/><rect x="550" y="120" width="260" height="28" rx="14" fill="#0f172a"/><rect x="550" y="178" width="214" height="16" rx="8" fill="#64748b"/><rect x="550" y="212" width="250" height="16" rx="8" fill="#94a3b8"/><rect x="550" y="246" width="188" height="16" rx="8" fill="#cbd5e1"/><rect x="550" y="318" width="118" height="42" rx="21" fill="#0ea5e9"/><rect x="686" y="318" width="118" height="42" rx="21" fill="#10b981"/><text x="480" y="438" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#0f766e">图片会作为资源保存，并在正文中直接展示</text></svg>',
   },
 ];
 const DEMO_SEED_NOTEBOOK_IDS = DEMO_SEED_NOTEBOOKS.map((notebook) => notebook.id);
@@ -509,7 +540,7 @@ app.get("/api/v1/notebooks", async (c) => {
   }
 
   if (isDemoMode(c.env)) {
-    await ensureDemoSeed(c.env.DB);
+    await ensureDemoSeed(c.env);
   }
 
   const rows = await c.env.DB.prepare(
@@ -3145,9 +3176,11 @@ const emptyTrashMemosRecord = async (
 
 const isDemoMode = (env: Bindings) => env.EDGE_EVER_DEMO_MODE?.trim().toLowerCase() === "true";
 
-const ensureDemoSeed = async (db: D1Database) => {
+const ensureDemoSeed = async (env: Bindings, options: { refreshResources?: boolean } = {}) => {
+  const db = env.DB;
   const now = isoNow();
   const statements: D1PreparedStatement[] = [];
+  const bucketName = env.EDGE_EVER_R2_BUCKET_NAME?.trim() || DEFAULT_R2_BUCKET_NAME;
 
   for (const notebook of DEMO_SEED_NOTEBOOKS) {
     statements.push(
@@ -3239,6 +3272,77 @@ const ensureDemoSeed = async (db: D1Database) => {
     );
   }
 
+  const existingResourceIds = options.refreshResources
+    ? new Set<string>()
+    : new Set(
+        (
+          await db
+            .prepare(`SELECT id FROM resources WHERE id IN (${DEMO_SEED_RESOURCES.map(() => "?").join(", ")})`)
+            .bind(...DEMO_SEED_RESOURCES.map((resource) => resource.id))
+            .all<{ id: string }>()
+        ).results.map((resource) => resource.id)
+      );
+
+  for (const resource of DEMO_SEED_RESOURCES) {
+    const bytes = new TextEncoder().encode(resource.svg);
+    const objectKey = `demo/${resource.memoId}/${resource.id}.svg`;
+
+    if (options.refreshResources || !existingResourceIds.has(resource.id)) {
+      await env.RESOURCES.put(objectKey, bytes, {
+        httpMetadata: {
+          contentType: resource.mimeType,
+          cacheControl: "private, max-age=3600",
+        },
+        customMetadata: {
+          memoId: resource.memoId,
+          resourceId: resource.id,
+          filename: resource.filename,
+          demoSeed: "true",
+        },
+      });
+    }
+
+    statements.push(
+      db
+        .prepare(
+          `INSERT INTO resources (
+            id, memo_id, bucket_name, object_key, kind, mime_type, filename,
+            byte_size, sha256, width, height, metadata_json, is_deleted, created_at, updated_at, deleted_at
+          ) VALUES (?, ?, ?, ?, 'image', ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, NULL)
+          ON CONFLICT(id) DO UPDATE SET
+            memo_id = excluded.memo_id,
+            bucket_name = excluded.bucket_name,
+            object_key = excluded.object_key,
+            kind = 'image',
+            mime_type = excluded.mime_type,
+            filename = excluded.filename,
+            byte_size = excluded.byte_size,
+            sha256 = excluded.sha256,
+            width = excluded.width,
+            height = excluded.height,
+            metadata_json = excluded.metadata_json,
+            is_deleted = 0,
+            updated_at = excluded.updated_at,
+            deleted_at = NULL`
+        )
+        .bind(
+          resource.id,
+          resource.memoId,
+          bucketName,
+          objectKey,
+          resource.mimeType,
+          resource.filename,
+          bytes.byteLength,
+          await sha256Bytes(bytes),
+          resource.width,
+          resource.height,
+          JSON.stringify({ source: "demo-seed" }),
+          now,
+          now
+        )
+    );
+  }
+
   await db.batch(statements);
 };
 
@@ -3265,7 +3369,7 @@ const resetDemoData = async (env: Bindings, scheduledTime: number) => {
     db.prepare(`DELETE FROM audit_events`),
   ]);
 
-  await ensureDemoSeed(db);
+  await ensureDemoSeed(env, { refreshResources: true });
   await audit(db, "system", null, "demo.reset", "demo", "edgeever-demo", {
     scheduledTime: new Date(scheduledTime).toISOString(),
     seedMemoCount: DEMO_SEED_MEMOS.length,

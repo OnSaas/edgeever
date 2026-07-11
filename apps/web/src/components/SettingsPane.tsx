@@ -10,6 +10,7 @@ import { PwaInstallCard } from "./settings/PwaInstallCard";
 import { PasswordCard } from "./settings/PasswordCard";
 import { SessionCard } from "./settings/SessionCard";
 import { SystemInfoCard } from "./settings/SystemInfoCard";
+import { ThemeToggle } from "./ThemeToggle";
 
 interface SettingsPaneProps {
   onClose: () => void;
@@ -58,6 +59,7 @@ export const SettingsPane = ({
             <p className="mt-0.5 truncate text-xs font-medium text-slate-400">{t("settings.subtitle")}</p>
           </div>
         </div>
+        <ThemeToggle />
       </header>
 
       <div className="min-w-0 flex-1 overflow-x-hidden overflow-y-auto px-4 py-4 lg:px-6 lg:py-6">

@@ -139,6 +139,13 @@ export const zhCN = {
     imageCompressionTitle: "压缩笔记内图片",
     imageCompressionDescription: "上传大图时在本地压缩，节省资源占用。",
     imageCompressionAria: "是否压缩笔记内图片",
+    themeTitle: "界面主题",
+    themeDescription: "选择浅色、深色，或跟随系统设置。",
+    themeSystem: "跟随系统",
+    themeLight: "浅色",
+    themeDark: "深色",
+    themeToggleToDark: "切换到深色模式",
+    themeToggleToLight: "切换到浅色模式",
   },
   systemInfo: {
     title: "系统信息",

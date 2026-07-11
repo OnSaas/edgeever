@@ -139,6 +139,13 @@ export const enUS = {
     imageCompressionTitle: "Compress note images",
     imageCompressionDescription: "Compress large images locally before upload to reduce storage use.",
     imageCompressionAria: "Compress note images",
+    themeTitle: "Interface theme",
+    themeDescription: "Choose light, dark, or follow your system setting.",
+    themeSystem: "Follow system",
+    themeLight: "Light",
+    themeDark: "Dark",
+    themeToggleToDark: "Switch to dark mode",
+    themeToggleToLight: "Switch to light mode",
   },
   systemInfo: {
     title: "System info",

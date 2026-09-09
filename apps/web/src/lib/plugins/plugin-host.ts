@@ -43,7 +43,6 @@ const INSTALLED_EXTENSIONS_STORAGE_KEY = "edgeever.extensions.installed.v1";
 const ACTIVE_THEME_STORAGE_KEY = "edgeever.extensions.active-theme.v1";
 const STORAGE_PREFIX = "edgeever.plugin-data.v1";
 const SETTINGS_STORAGE_PREFIX = "edgeever.plugin-settings.v1";
-const RECENT_ACTIONS_STORAGE_PREFIX = "edgeever.extensions.recent-actions.v1";
 
 const readStorageItem = (key: string) => {
   try {
@@ -172,7 +171,6 @@ export interface PluginHostSnapshot {
   commands: RegisteredPluginCommand[];
   panels: RegisteredPluginPanel[];
   embeds: RegisteredPluginEmbed[];
-  recentActions: RegisteredPluginAction[];
   activeThemeId: string | null;
 }
 
@@ -425,8 +423,7 @@ export class EdgeEverPluginHost {
   private readonly eventListeners = new Map<keyof PluginEventMap, Set<{ pluginId: string; listener: (payload: never) => void }>>();
   private extensions = readInstalledExtensions();
   private activeThemeId = readStorageItem(ACTIVE_THEME_STORAGE_KEY);
-  private snapshot: PluginHostSnapshot = { extensions: [], commands: [], panels: [], embeds: [], recentActions: [], activeThemeId: null };
-  private recentActions: RegisteredPluginAction[];
+  private snapshot: PluginHostSnapshot = { extensions: [], commands: [], panels: [], embeds: [], activeThemeId: null };
   private editorAdapter: PluginEditorAdapter | null = null;
   private navigationAdapter: PluginNavigationAdapter | null = null;
   private panelAdapter: PluginPanelAdapter | null = null;
@@ -452,7 +449,6 @@ export class EdgeEverPluginHost {
     this.secretStorage = options.secretStorage ?? new WebPluginSecretStore();
     this.packageStorage = options.packageStorage ?? new WebPluginPackageStore();
     this.scheduleAdapter = options.scheduleAdapter;
-    this.recentActions = this.readRecentActions();
     this.refreshSnapshot();
   }
 
@@ -647,8 +643,6 @@ export class EdgeEverPluginHost {
     const extension = this.requireExtension(extensionId);
     if (extension.manifest.type === "plugin") await this.deactivatePlugin(extensionId);
     this.extensions = this.extensions.filter((item) => item.manifest.id !== extensionId);
-    this.recentActions = this.recentActions.filter((action) => action.pluginId !== extensionId);
-    this.persistRecentActions();
     if (this.activeThemeId === extensionId) {
       this.activeThemeId = null;
       removeStorageItem(ACTIVE_THEME_STORAGE_KEY);
@@ -715,7 +709,6 @@ export class EdgeEverPluginHost {
     const command = this.commands.get(`${pluginId}:${commandId}`);
     if (!command) throw new Error("Plugin command is not registered.");
     await command.run();
-    this.recordRecentAction({ pluginId, id: commandId, title: command.title, type: "command" });
   }
 
   async mountPanel(
@@ -749,7 +742,6 @@ export class EdgeEverPluginHost {
       if (typeof pluginDispose === "function") pluginDispose();
     };
     mounted.add(dispose);
-    this.recordRecentAction({ pluginId, id: panelId, title: panel.title, type: "panel" });
     return dispose;
   }
 
@@ -1463,6 +1455,15 @@ export class EdgeEverPluginHost {
     if (manifest.type === "plugin" && manifest.apiVersion !== PLUGIN_API_VERSION) {
       throw new Error(`Marketplace plugins must use plugin API v${PLUGIN_API_VERSION}.`);
     }
+    if (entry.publisher === "edgeever") {
+      if (!entry.verification.checksums?.manifestJson) throw new Error("Official extensions must pin the manifest checksum.");
+      if (manifest.type === "plugin" && !entry.verification.checksums.mainJs) {
+        throw new Error("Official plugins must pin the main.js checksum.");
+      }
+      if (actualChecksums.stylesCss && !entry.verification.checksums.stylesCss) {
+        throw new Error("Official plugins must pin the styles.css checksum when styles are distributed.");
+      }
+    }
     for (const [name, expected] of Object.entries(entry.verification.checksums ?? {})) {
       const actual = actualChecksums[name as keyof CachedPluginPackage["checksums"]];
       if (!actual || actual.toLocaleLowerCase() !== expected) throw new Error(`${name} does not match the marketplace verified checksum.`);
@@ -1508,54 +1509,7 @@ export class EdgeEverPluginHost {
     this.refreshSnapshot();
   }
 
-  private readRecentActions(): RegisteredPluginAction[] {
-    try {
-      const parsed = JSON.parse(readStorageItem(`${RECENT_ACTIONS_STORAGE_PREFIX}:${this.scope}`) ?? "[]") as unknown;
-      if (!Array.isArray(parsed)) return [];
-      return parsed.flatMap((item) => {
-        if (!item || typeof item !== "object") return [];
-        const action = item as Partial<RegisteredPluginAction>;
-        if (
-          typeof action.pluginId !== "string" ||
-          typeof action.id !== "string" ||
-          typeof action.title !== "string" ||
-          (action.type !== "command" && action.type !== "panel")
-        ) return [];
-        return [action as RegisteredPluginAction];
-      }).slice(0, 5);
-    } catch {
-      return [];
-    }
-  }
-
-  private recordRecentAction(action: RegisteredPluginAction) {
-    this.recentActions = [
-      action,
-      ...this.recentActions.filter((item) => item.pluginId !== action.pluginId || item.id !== action.id || item.type !== action.type),
-    ].slice(0, 5);
-    this.persistRecentActions();
-    this.refreshSnapshot();
-  }
-
-  private persistRecentActions() {
-    try {
-      writeStorageItem(`${RECENT_ACTIONS_STORAGE_PREFIX}:${this.scope}`, JSON.stringify(this.recentActions));
-    } catch {
-      // Recent actions are a convenience and must never make a successful plugin action fail.
-    }
-  }
-
   private refreshSnapshot() {
-    const registeredActions = new Map<string, RegisteredPluginAction>([
-      ...[...this.commands.values()].map(({ pluginId, id, title }) => [
-        `command:${pluginId}:${id}`,
-        { pluginId, id, title, type: "command" as const },
-      ] as const),
-      ...[...this.panels.values()].map(({ pluginId, id, title }) => [
-        `panel:${pluginId}:${id}`,
-        { pluginId, id, title, type: "panel" as const },
-      ] as const),
-    ]);
     this.snapshot = {
       extensions: this.extensions.map((item) => ({ ...item, manifest: { ...item.manifest } })),
       commands: [...this.commands.values()].map(({ pluginId, id, title }) => ({ pluginId, id, title })),
@@ -1566,10 +1520,6 @@ export class EdgeEverPluginHost {
         presentation: presentation === "fullscreen" ? "fullscreen" : "dialog",
       })),
       embeds: [...this.embeds.values()].map(({ pluginId, type }) => ({ pluginId, type })),
-      recentActions: this.recentActions.flatMap((action) => {
-        const registered = registeredActions.get(`${action.type}:${action.pluginId}:${action.id}`);
-        return registered ? [registered] : [];
-      }),
       activeThemeId: this.activeThemeId,
     };
     for (const listener of this.listeners) listener();

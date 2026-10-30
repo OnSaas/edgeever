@@ -77,13 +77,6 @@ export const ShareMemoDialog = ({
       void queryClient.invalidateQueries({ queryKey: ["memo-shares"] });
     },
   });
-  const slugMutation = useMutation({
-    mutationFn: (slug: string | null) => api.updateMemoShare(memoId, { slug }),
-    onSuccess: (data) => {
-      queryClient.setQueryData(queryKey, data);
-      void queryClient.invalidateQueries({ queryKey: ["memo-shares"] });
-    },
-  });
   const revokeMutation = useMutation({
     mutationFn: (targetMemoId: string) => api.revokeMemoShare(targetMemoId),
     onSuccess: (_, targetMemoId) => {
